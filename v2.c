@@ -5,21 +5,11 @@
 #define ROWS 10
 #define COLS 10
 #define MINES 15
-#define LIVES 3
 
 int board[ROWS][COLS];
 int revealed[ROWS][COLS];
-int mines[ROWS][COLS];
+int lives = 3;
 int mines_left = MINES;
-int bomb_locations[MINES][2];
-struct move {
-    int x;
-    int y;
-    int is_bomb;
-};
-
-struct move moves[ROWS * COLS];
-int num_moves = 0;
 
 void init_board() {
     int i, j, k;
@@ -36,8 +26,6 @@ void init_board() {
             j = rand() % COLS;
         } while (board[i][j] == -1);
         board[i][j] = -1;
-        bomb_locations[k][0] = i;
-        bomb_locations[k][1] = j;
         for (int di = -1; di <= 1; di++) {
             for (int dj = -1; dj <= 1; dj++) {
                 int ni = i + di;
@@ -50,10 +38,9 @@ void init_board() {
     }
 }
 
-
 void print_board() {
     int i, j;
-    printf("Mines left: %d\n", mines_left);
+    printf("Mines left: %d   Lives: %d\n", mines_left, lives);
     printf("  ");
     for (j = 0; j < COLS; j++) {
         printf("%d ", j);
@@ -81,20 +68,19 @@ void print_board() {
     }
 }
 
-
 void reveal(int i, int j) {
     if (revealed[i][j]) {
         return;
     }
     revealed[i][j] = 1;
     if (board[i][j] == -1) {
-        printf("Game over!\n");
-        moves[num_moves].x = i;
-        moves[num_moves].y = j;
-        moves[num_moves].is_bomb = 1;
-        num_moves++;
-        print_board();
-        exit(0);
+        printf("Mine hit!\n");
+        lives--;
+        mines_left--;
+        if (lives == 0) {
+            printf("Game over!\n");
+            exit(0);
+        }
     } else if (board[i][j] == 0) {
         for (int di = -1; di <= 1; di++) {
             for (int dj = -1; dj <= 1; dj++) {
@@ -105,27 +91,16 @@ void reveal(int i, int j) {
                 }
             }
         }
-    } else {
-        moves[num_moves].x = i;
-        moves[num_moves].y = j;
-        moves[num_moves].is_bomb = 0;
-        num_moves++;
     }
-    print_board();
-    fflush(stdout);
 }
-
-
-
-
-
 
 int main() {
     srand(time(NULL));
     init_board();
-    int lives = LIVES;
+    int lives = 3;
     while (1) {
-        printf("\nLives left: %d\n", lives);
+        system("cls"); // Clears the screen (for Windows)
+        print_board();
         int x, y;
         printf("Enter x and y coordinates (separated by a space): ");
         scanf("%d %d", &x, &y);
@@ -137,20 +112,18 @@ int main() {
             printf("This tile has already been revealed. Try again.\n");
             continue;
         }
+        reveal(x, y);
         if (board[x][y] == -1) {
-            printf("Game over!\n");
-            reveal(x, y); // show the bomb location
-            moves[num_moves].x = x;
-            moves[num_moves].y = y;
-            moves[num_moves].is_bomb = 1;
-            num_moves++;
-            exit(0);
-        } else {
-            reveal(x, y);
-            if (--mines_left == 0) {
-                printf("You win!\n");
+            lives--;
+            printf("You hit a mine! You have %d lives left.\n", lives);
+            if (lives == 0) {
+                printf("Game over!\n");
                 exit(0);
             }
+        }
+        if (mines_left == 0) {
+            printf("You win!\n");
+            exit(0);
         }
     }
     return 0;
