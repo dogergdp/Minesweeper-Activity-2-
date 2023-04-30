@@ -11,7 +11,7 @@ int board[ROWS][COLS];
 int revealed[ROWS][COLS];
 int lives = 3;
 int mines_left = NUM_MINES;
-
+int num_unrevealed = ROWS * COLS - NUM_MINES;
 
 void print_line(int LENGTH){
 	int i;
@@ -55,11 +55,11 @@ void print_board() {
     printf("\t\t\t\t\t\t| Mines left: %d  | %c  Lives: %d |\n", mines_left, 3, lives);
     printf("\t\t\t\t\t\t+");print_line(16);printf("+");print_line(13);printf("+");printf("\n");
 
-    
+
     printf("\t\t\t\t\t");printf("+");print_line(3);printf("+");print_line(39);printf("+");printf("\n");
     printf("\t\t\t\t\t|   | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |\n");
     printf("\t\t\t\t\t");printf("+");print_line(3);printf("+");print_line(39);printf("+");printf("\n");
-    
+
     for (i = 0; i < ROWS; i++) {
         printf("\t\t\t\t\t| %d ", i);
         for (j = 0; j < COLS; j++) {
@@ -110,6 +110,7 @@ void reveal(int i, int j) {
         return;
     }
     revealed[i][j] = 1;
+    num_unrevealed--;
     if (board[i][j] == -1) {
         printf("Mine hit!\n");
         lives--;
@@ -128,6 +129,10 @@ void reveal(int i, int j) {
                 }
             }
         }
+    }
+    if (num_unrevealed == mines_left) {
+        printf("You win!\n");
+        exit(0);
     }
 }
 
@@ -167,6 +172,6 @@ int main() {
             exit(0);
         }
     }
+
     return 0;
 }
-
