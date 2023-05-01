@@ -159,7 +159,7 @@ int main() {
     init_board();
     int game_over = 0;
     // Number of moves entered by tester must be indicated manually in this format: int moves[number_of_moves][2]
-    int moves[31][2] = {	{0, 7}, 
+    int moves[31][2] = {				{0, 7}, 
 							{0, 8}, 
 							{6, 1}, 
 							{7, 3}, 
