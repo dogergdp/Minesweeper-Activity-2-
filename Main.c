@@ -109,6 +109,7 @@ void print_board() {
 
 
 
+
 void reveal(int i, int j) {
     if (revealed[i][j]) {
         return;
@@ -144,7 +145,7 @@ int main() {
         print_board();
         int row, col;
         do {
-            printf("Enter row and column (e.g. 3 4): ");
+            printf("\n\n\t\t\t\t\t Enter row and column (e.g. 3 4): ");
             if (scanf("%d %d", &row, &col) != 2) {
                 printf("Invalid input. Please enter two integers separated by a space.\n");
                 scanf("%*s"); // discard invalid input
@@ -171,10 +172,9 @@ int main() {
         }
 
         if (revealed_count == ROWS * COLS) {
-            printf("You won!\n");
+            printf("\n\n\t\t\t\t\t\t\t   YOU WON!\n");
             game_over = 1;
         }
     }
     return 0;
 }
-
