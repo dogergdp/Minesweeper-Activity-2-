@@ -218,7 +218,7 @@ int main() {
         if (revealed_count == ROWS * COLS) {
             system("cls");
 			print_board();
-			printf("You won!\n");
+			printf("\n\n\t\t\t\t\t\t\t   YOU WON!\n");
             game_over = 1;
         }
     }
