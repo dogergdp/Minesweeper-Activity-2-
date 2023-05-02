@@ -145,10 +145,10 @@ int main() {
         do {
             printf("\n\n\t\t\t\t\t Enter row and column (e.g. 3 4): ");
             if (scanf("%d %d", &row, &col) != 2) {
-			    printf("\n\t\t\t\t\t Invalid input. Please enter two integers separated by a space.");
-			    while(getchar() != '\n'); // consume the remaining characters in input buffer
-			    continue;
-			}
+		printf("\n\t\t\t\t\t Invalid input. Please enter two integers separated by a space.");
+		while(getchar() != '\n'); // consume the remaining characters in input buffer
+		continue;
+	    }
             if (row < 0 || row >= ROWS || col < 0 || col >= COLS) {
                 printf("\n\t\t\t\t\t Invalid input. Please enter row and column values between 0 and 9.");
                 continue;
