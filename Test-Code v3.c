@@ -159,7 +159,7 @@ int main() {
     srand(time(NULL));
     init_board();
     int game_over = 0;
-	int pre_moves[][2] = {	{0, 7}, 
+	int pre_moves[][2] = {				{0, 7}, 
 							{0, 8}, 
 							{6, 1}, 
 							{7, 3}, 
