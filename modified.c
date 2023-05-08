@@ -5,12 +5,13 @@
 
 #define ROWS 10
 #define COLS 10
-#define NUM_BOMBS 5
-
+#define NUM_MINES 5
 
 int board[ROWS][COLS];
 int revealed[ROWS][COLS];
-int lives = 3;
+int lives = 20;
+int mines_left = NUM_MINES;
+
 
 void print_line(int LENGTH){
 	int i;
@@ -28,7 +29,7 @@ void init_board() {
             revealed[i][j] = 0;
         }
     }
-    for (k = 0; k < NUM_BOMBS; k++) {
+    for (k = 0; k < NUM_MINES; k++) {
         int i, j;
         do {
             i = rand() % ROWS;
@@ -50,9 +51,9 @@ void init_board() {
 void print_board() {
     int i, j;
     printf("\n");
-    printf("\t\t\t\t\t  +");print_line(24);printf("+");print_line(13);printf("+");printf("\n");
-    printf("\t\t\t\t\t  | Bombs in the field: %d  | %c  Lives: %d |\n", NUM_BOMBS, 3, lives);
-    printf("\t\t\t\t\t  +");print_line(24);printf("+");print_line(13);printf("+");printf("\n\n");
+    printf("\t\t\t\t\t\t+");print_line(16);printf("+");print_line(13);printf("+");printf("\n");
+    printf("\t\t\t\t\t\t| Mines left: %d  | %c  Lives: %d |\n", mines_left, 3, lives);
+    printf("\t\t\t\t\t\t+");print_line(16);printf("+");print_line(13);printf("+");printf("\n");
 
 
     printf("\t\t\t\t\t");printf("+");print_line(3);printf("+");print_line(39);printf("+");printf("\n");
@@ -112,6 +113,7 @@ void reveal(int i, int j) {
     if (board[i][j] == -1) {
         printf("Mine hit!\n");
         lives--;
+        mines_left--;
         if (lives == 0) {
             printf("Game over!\n");
             exit(0);
@@ -131,37 +133,46 @@ void reveal(int i, int j) {
 
 int main() {
     srand(time(NULL));
-    int non_bomb = (ROWS * COLS) - NUM_BOMBS;
     init_board();
-    while (1) {
+    int non_mine_count = ROWS * COLS - NUM_MINES;
+    int game_over = 0;
+    while (!game_over) {
         system("cls");
-        int x, y;
         print_board();
-        printf("\n\n");
-        printf("\t\t\t\t  Enter x and y coordinates (separated by a space): ");
-        scanf("%d %d", &x, &y);
-        if (x < 0 || x >= ROWS || y < 0 || y >= COLS) {
-            printf("Invalid coordinates. Try again.\n");
-            continue;
-        }
-        if (revealed[x][y]) {
-            printf("This tile has already been revealed. Try again.\n");
-            continue;
-        }
-        reveal(x, y);
-        if (board[x][y] == -1) {
-            lives--;
-            printf("You hit a mine! You have %d lives left.\n", lives);
-            if (lives == 0) {
-                printf("Game over!\n");
-                exit(0);
+        int row, col;
+        do {
+            printf("Enter row and column (e.g. 3 4): ");
+            if (scanf("%d %d", &row, &col) != 2) {
+                printf("Invalid input. Please enter two integers separated by a space.\n");
+                scanf("%*s"); // discard invalid input
+                continue;
             }
-        } 
+            if (row < 0 || row >= ROWS || col < 0 || col >= COLS) {
+                printf("Invalid input. Please enter row and column values between 0 and 9.\n");
+                continue;
+            }
+            if (revealed[row][col]) {
+                printf("This cell has already been revealed. Please choose another cell.\n");
+                continue;
+            }
+            break;
+        } while (1);
+        reveal(row, col);
+        int revealed_count = 0;
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLS; j++) {
+                if (revealed[i][j] || board[i][j] == -1) {
+                    revealed_count++;
+                }
+            }
         }
-        if (non_bomb = 0) {
-            printf("You win!\n");
-            exit(0);
+
+        if (revealed_count == ROWS * COLS) {
+            printf("You won!\n");
+            game_over = 1;
         }
-        return 0;
     }
+    return 0;
+}
+
 
